@@ -3,6 +3,8 @@ from datetime import datetime
 import pytest
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
+
+from testdata.data import Data
 from utils.appium_server import AppiumServer
 from utils.data_loader import get_file_path
 from utils.logger import setup_logger
@@ -41,12 +43,12 @@ def logger():
 
 
 def pytest_addoption(parser):
-    parser.addoption("--platform-version", action="store", default="16", help="Android platform version")
-    parser.addoption("--device-name", action="store", default="emulator-5554", help="Device name")
-    parser.addoption("--app-path", action="store", default=get_file_path("apk/Android_Demo_App.apk"),
+    parser.addoption("--platform-version", action="store", default=Data.PLATFORM_VERSION, help="Android platform version")
+    parser.addoption("--device-name", action="store", default=Data.DEVICE_NAME, help="Device name")
+    parser.addoption("--app-path", action="store", default=get_file_path(Data.APK_PATH),
                      help="Path to the app file")
-    parser.addoption("--app_package", action="store", default="com.code2lead.kwad")
-    parser.addoption("--app_activity", action="store", default="com.code2lead.kwad.MainActivity")
+    parser.addoption("--app_package", action="store", default=Data.PACKAGE_NAME)
+    parser.addoption("--app_activity", action="store", default=Data.APP_ACTIVITY)
 
 
 @pytest.fixture
@@ -58,8 +60,8 @@ def setup(request, logger):
     app_activity = request.config.getoption("--app_activity")
 
     desired_caps = {
-        'platformName': 'Android',
-        'automationName': 'UiAutomator2',
+        'platformName': Data.PLATFORM_NAME,
+        'automationName': Data.AUTOMATION_NAME,
         'platformVersion': platform_version,
         'deviceName': device_name,
         'app': app_path,
@@ -70,7 +72,7 @@ def setup(request, logger):
     options = UiAutomator2Options().load_capabilities(desired_caps)
     server = AppiumServer()
     server.start_server()
-    driver = webdriver.Remote('http://127.0.0.1:4723', options=options)
+    driver = webdriver.Remote(str(Data.REMOTE_URL), options=options)
     request.cls.driver = driver if hasattr(request, 'cls') else driver
 
     logger.info(f"\n##### Starting test: {request.node.name} #####")
