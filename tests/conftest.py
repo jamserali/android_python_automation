@@ -7,6 +7,8 @@ from utils.appium_server import AppiumServer
 from utils.data_loader import get_file_path
 from utils.logger import setup_logger
 import allure
+from utils.data_loader import get_file_path
+
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
