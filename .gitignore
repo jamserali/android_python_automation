@@ -21,3 +21,7 @@ secret/*
 
 #Ignore png
 *.png
+
+inspectionProfiles/
+*.iml
+*.xml
