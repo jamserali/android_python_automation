@@ -14,3 +14,4 @@ class TestDemo:
     def test_verify_login_functionality_using_csv(self, setup, testdata):
         home_page = HomePage(setup)
         home_page.verify_login_functionality(testdata['email'], testdata['password'])
+
