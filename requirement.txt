@@ -1,6 +1,5 @@
-python -m pip install --upgrade pip
-python -m pip install --upgrade pytest
-python -m pip install --upgrade pluggy
+pytest
+pluggy
 pytest-html
 pandas openpyxl
 Appium-Python-Client
