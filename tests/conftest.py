@@ -6,6 +6,8 @@ from appium.options.android import UiAutomator2Options
 from utils.appium_server import AppiumServer
 from utils.logger import setup_logger
 import allure
+from utils.data_loader import get_file_path
+
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -41,7 +43,7 @@ def logger():
 def pytest_addoption(parser):
     parser.addoption("--platform-version", action="store", default="16", help="Android platform version")
     parser.addoption("--device-name", action="store", default="emulator-5554", help="Device name")
-    parser.addoption("--app-path", action="store", default="D:/Android_Automation/apk/Android_Demo_App.apk",
+    parser.addoption("--app-path", action="store", default=get_file_path("apk/Android_Demo_App.apk"),
                      help="Path to the app file")
     parser.addoption("--app_package", action="store", default="com.code2lead.kwad")
     parser.addoption("--app_activity", action="store", default="com.code2lead.kwad.MainActivity")
