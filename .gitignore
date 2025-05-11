@@ -18,5 +18,5 @@ build/
 # Ignore everything in folder except one file
 secret/*
 !secret/keepme.txt
-
+#Ignore png
 *.png
