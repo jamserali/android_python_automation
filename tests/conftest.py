@@ -7,8 +7,6 @@ from utils.appium_server import AppiumServer
 from utils.data_loader import get_file_path
 from utils.logger import setup_logger
 import allure
-from utils.data_loader import get_file_path
-
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -40,6 +38,7 @@ def pytest_runtest_makereport(item, call):
 @pytest.fixture(scope="session")
 def logger():
     return setup_logger()
+
 
 def pytest_addoption(parser):
     parser.addoption("--platform-version", action="store", default="16", help="Android platform version")
