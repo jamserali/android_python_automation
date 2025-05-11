@@ -27,3 +27,5 @@ inspectionProfiles/
 *.xml
 
 __pycache__
+
+.idea/
