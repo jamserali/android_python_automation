@@ -1,0 +1,8 @@
+2025-05-10 18:40:47 - appium_automation_test - INFO - 
+##### Starting test: test_verify_login_functionality_using_xlsx[testdata0] #####
+2025-05-10 18:40:52 - appium_automation_test - INFO - #####  Finished test: test_verify_login_functionality_using_xlsx[testdata0] ##### 
+
+2025-05-10 18:41:02 - appium_automation_test - INFO - 
+##### Starting test: test_verify_login_functionality_using_csv[testdata0] #####
+2025-05-10 18:41:08 - appium_automation_test - INFO - #####  Finished test: test_verify_login_functionality_using_csv[testdata0] ##### 
+
