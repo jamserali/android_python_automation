@@ -4,7 +4,7 @@ from utils.data_loader import load_test_data
 
 
 @pytest.mark.usefixtures("setup")
-class TestDemo:
+class TestLogin:
     @pytest.mark.parametrize("testdata", load_test_data("testdata/testdata_xls.xlsx", sheet_name="Sheet1"))
     def test_verify_login_functionality_using_xlsx(self, setup, testdata):
         home_page = HomePage(setup)
