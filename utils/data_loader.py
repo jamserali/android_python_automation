@@ -1,6 +1,16 @@
-
 import pandas as pd
 import os
+
+
+def get_file_path(relative_path: str) -> str:
+    """
+    Returns the absolute path to a file relative to the project's content root.
+    :param relative_path: Path relative to the project root (e.g., 'data/testdata.csv')
+    :return: Absolute path to the file
+    """
+    project_root = os.path.dirname(os.path.abspath(__file__))  # path of current file
+    content_root = os.path.abspath(os.path.join(project_root, os.pardir))  # move up to root
+    return os.path.join(content_root, relative_path)
 
 
 def load_test_data(file_path, sheet_name=None):
