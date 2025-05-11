@@ -1,4 +1,4 @@
-Execute tests python -m pytest --alluredir=reports/allure-results
+Execute tests :  python -m pytest --alluredir=reports/allure-results
 
 
-See Allure report allure serve reports/allure-results
+See Allure report:  allure serve reports/allure-results
