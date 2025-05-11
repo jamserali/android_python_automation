@@ -1,8 +1,6 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
-
-# from utils.appium_actions import AppiumActions
 from utils.logger import setup_logger
 
 
@@ -10,7 +8,6 @@ class HomePage:
     def __init__(self, driver):
         self.driver = driver
         self.wait = WebDriverWait(driver, 20)
-        # self.actions = AppiumActions(driver)
         self.logger = setup_logger()
 
     battery_locator = (AppiumBy.XPATH, '//*[@text="Battery"]')

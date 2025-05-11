@@ -4,3 +4,4 @@ python -m pip install --upgrade pluggy
 pytest-html
 pandas openpyxl
 Appium-Python-Client
+allure-pytest
