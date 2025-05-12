@@ -3,7 +3,6 @@ from datetime import datetime
 import pytest
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
-
 from testdata.data import Data
 from utils.appium_server import AppiumServer
 from utils.data_loader import get_file_path
