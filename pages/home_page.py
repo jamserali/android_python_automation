@@ -34,3 +34,9 @@ class HomePage:
             expected_conditions.element_to_be_clickable(self.battery_locator))
         battery_element.click()
         return self
+
+    def validate_device_details(self):
+        self.logger.info("Current Activity : %s", self.driver.current_activity)
+        self.logger.info("Current context : %s", self.driver.current_context)
+        self.logger.info("Current orientation : %s", self.driver.orientation)
+        self.logger.info("Check Whether device is locked or not  : %s", self.driver.is_locked())

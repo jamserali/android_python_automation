@@ -14,3 +14,7 @@ class TestLogin:
     def test_verify_login_functionality_using_csv(self, setup, testdata):
         home_page = HomePage(setup)
         home_page.verify_login_functionality(testdata['email'], testdata['password'])
+
+    def test_verify_device_details(self,setup):
+        home_page = HomePage(setup)
+        home_page.validate_device_details()
