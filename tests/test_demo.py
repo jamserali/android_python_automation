@@ -30,3 +30,15 @@ class TestLogin:
     def test_verify_tab_activity(self,setup):
         home_page = HomePage(setup)
         home_page.verify_tab_activity()
+
+    def test_verify_scroll_view_and_alert(self,setup):
+        home_page = HomePage(setup)
+        home_page.verify_scroll_view(button="1")
+        home_page.verify_scroll_view(button="2")
+        home_page.verify_scroll_view(button="3")
+        home_page.verify_scroll_view(button="4")
+        home_page.verify_scroll_view(button="5")
+
+
+
+

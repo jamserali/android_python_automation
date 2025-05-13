@@ -44,6 +44,23 @@ class HomePage:
     movie_tab = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("MOVIE")')
     movie_fragment_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("MovieFragment")')
 
+    # Scroll view
+    scroll_view_button = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("ScrollView")')
+    scroll_view_button1_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BUTTON1")')
+    scroll_view_button2_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BUTTON2")')
+    scroll_view_button3_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BUTTON3")')
+    scroll_view_button4_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BUTTON4")')
+    scroll_view_button5_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BUTTON5")')
+    scroll_view_button6_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BUTTON6")')
+    scroll_view_button7_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BUTTON7")')
+    scroll_view_button8_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BUTTON8")')
+    scroll_view_button9_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BUTTON9")')
+    scroll_view_button10_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BUTTON10")')
+    yes_btn = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("YES")')
+    no_btn = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("NO")')
+
+
+
     def verify_login_functionality(self, email, password):
         self.wait.until(expected_conditions.visibility_of_element_located(self.logon_link_loc)).click()
         self.logger.info("Click on login link")
@@ -101,3 +118,24 @@ class HomePage:
         self.wait.until(expected_conditions.visibility_of_element_located(self.movie_tab)).click()
         movie_fragment = self.wait.until(expected_conditions.visibility_of_element_located(self.movie_fragment_loc)).text
         assert movie_fragment == "MovieFragment", "Movie fragment text is not matching"
+
+    def verify_scroll_view(self, button):
+        self.wait.until(expected_conditions.visibility_of_element_located(self.scroll_view_button)).click()
+
+        button_locators = {
+            "1": self.scroll_view_button1_loc,
+            "2": self.scroll_view_button2_loc,
+            "3": self.scroll_view_button3_loc,
+            "4": self.scroll_view_button4_loc,
+            "5": self.scroll_view_button5_loc
+        }
+
+        if button in button_locators:
+            self.wait.until(expected_conditions.visibility_of_element_located(button_locators[button])).click()
+        else:
+            raise ValueError(f"Invalid button number: {button}")
+
+        self.wait.until(expected_conditions.visibility_of_element_located(self.yes_btn)).click()
+
+
+
