@@ -23,3 +23,10 @@ class TestLogin:
         home_page = HomePage(setup)
         home_page.validate_android_key_code()
 
+    def test_verify_all_locators(self,setup):
+        home_page = HomePage(setup)
+        home_page.validate_contact_us_form()
+
+    def test_verify_tab_activity(self,setup):
+        home_page = HomePage(setup)
+        home_page.verify_tab_activity()

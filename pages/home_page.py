@@ -4,6 +4,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
+from testdata.data import Data
 from utils.android_common_methods import CommonMethods
 from utils.logger import setup_logger
 
@@ -21,6 +22,27 @@ class HomePage:
     login_btn = (AppiumBy.ID, 'com.code2lead.kwad:id/Btn3')
     enter_value_btn = (AppiumBy.ID, "com.code2lead.kwad:id/EnterValue")
     enter_some_value_filed_loc = (AppiumBy.CLASS_NAME, 'android.widget.EditText')
+    # Types of locator
+    # By Index value
+    contact_us_form_link = (AppiumBy.ANDROID_UIAUTOMATOR, "UiSelector().index(4)")
+    # By className
+    enter_name_field = (AppiumBy.CLASS_NAME, "android.widget.EditText")
+    # using resourceId
+    enter_email_field = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.code2lead.kwad:id/Et3")')
+    # Using Text
+    enter_mobile_number_field = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Enter Mobile No")')
+    # Using Text
+    submit_btn = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("SUBMIT")')
+    # using ID
+    address_field = (AppiumBy.ID, 'com.code2lead.kwad:id/Et6')
+    # Tab Activity
+    tab_activity_btn = (AppiumBy.ID, "com.code2lead.kwad:id/TabView")
+    home_tab = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("HOME")')
+    home_fragment_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("HomeFragment")')
+    sports_tab = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("SPORT")')
+    sports_fragment_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("SportFragment")')
+    movie_tab = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("MOVIE")')
+    movie_fragment_loc = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("MovieFragment")')
 
     def verify_login_functionality(self, email, password):
         self.wait.until(expected_conditions.visibility_of_element_located(self.logon_link_loc)).click()
@@ -54,3 +76,28 @@ class HomePage:
         element.click()
         for _ in range(5):
             self.driver.press_keycode(CommonMethods.get_android_keycodes()["KEYCODE_DEL"])
+
+    def validate_contact_us_form(self):
+        self.wait.until(expected_conditions.visibility_of_element_located(self.contact_us_form_link)).click()
+        name_field = self.wait.until(expected_conditions.visibility_of_element_located(self.enter_name_field))
+        name_field.send_keys(Data.NAME)
+        email_field = self.wait.until(expected_conditions.visibility_of_element_located(self.enter_email_field))
+        email_field.send_keys(Data.EMAIL)
+        address_field = self.wait.until(expected_conditions.visibility_of_element_located(self.address_field))
+        address_field.send_keys(Data.ADDRESS)
+        mobile_number_field = self.wait.until(
+            expected_conditions.visibility_of_element_located(self.enter_mobile_number_field))
+        mobile_number_field.send_keys(Data.MOBILE)
+        self.wait.until(expected_conditions.visibility_of_element_located(self.submit_btn)).click()
+
+    def verify_tab_activity(self):
+        self.wait.until(expected_conditions.visibility_of_element_located(self.tab_activity_btn)).click()
+        self.wait.until(expected_conditions.visibility_of_element_located(self.home_tab)).click()
+        home_fragment = self.wait.until(expected_conditions.visibility_of_element_located(self.home_fragment_loc)).text
+        assert home_fragment == "HomeFragment","Home fragment text is not matching"
+        self.wait.until(expected_conditions.visibility_of_element_located(self.sports_tab)).click()
+        sports_fragment = self.wait.until(expected_conditions.visibility_of_element_located(self.sports_fragment_loc)).text
+        assert sports_fragment == "SportFragment", "Sport fragment text is not matching"
+        self.wait.until(expected_conditions.visibility_of_element_located(self.movie_tab)).click()
+        movie_fragment = self.wait.until(expected_conditions.visibility_of_element_located(self.movie_fragment_loc)).text
+        assert movie_fragment == "MovieFragment", "Movie fragment text is not matching"
