@@ -3,11 +3,13 @@ class Data:
     PLATFORM_NAME = "Android"
     AUTOMATION_NAME = "UiAutomator2"
     APK_PATH = "apk/Android_Demo_App.apk"
-    DEVICE_NAME = "emulator-5554"
+    APK_NAME = "Android_Demo_App.apk"
+    DEVICE_NAME = "POCO M7 Pro 5G"
     PACKAGE_NAME = "com.code2lead.kwad"
     APP_ACTIVITY = "com.code2lead.kwad.MainActivity"
-    PLATFORM_VERSION = "16"
-    REMOTE_URL = "http://127.0.0.1:4723"
+    PLATFORM_VERSION = "15"
+    REMOTE_URL = "http://localhost:4723"
+    GRID_URL = "http://localhost:4444"
 
     # Form data
     NAME = "John Deer"

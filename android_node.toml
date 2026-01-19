@@ -1,0 +1,15 @@
+[node]
+detect-drivers = false
+
+[server]
+port = 5556
+
+[relay]
+url = "http://localhost:4723"
+status-endpoint = "/status"
+timeout = 100
+
+configs = [
+  "1", "{\"platformName\":\"Android\",\"automationName\":\"UiAutomator2\",\"deviceName\":\"POCO M7 Pro 5G\",\"udid\":\"AUIBOZXGT8WKUWPN\",\"appPackage\":\"com.code2lead.kwad\",\"appActivity\":\"com.code2lead.kwad.MainActivity\"}"
+]
+

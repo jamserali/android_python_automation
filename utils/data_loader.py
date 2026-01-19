@@ -32,3 +32,14 @@ def load_test_data(file_path, sheet_name=None):
     else:
         raise ValueError("Unsupported file format. Use .csv or .xlsx")
     return df.to_dict(orient='records')
+
+def find_file_path(filename):
+    base_dir = os.getcwd()
+    filename = filename.lower()
+
+    for root, dirs, files in os.walk(base_dir):
+        for file in files:
+            if file.lower() == filename:
+                return os.path.join(root, file)
+
+    return None

@@ -132,6 +132,7 @@ class HomePage:
 
         if button in button_locators:
             self.wait.until(expected_conditions.visibility_of_element_located(button_locators[button])).click()
+            self.logger.info("Clicked Button number :%s", button)
         else:
             raise ValueError(f"Invalid button number: {button}")
 

@@ -1,42 +1,59 @@
+import base64
 import os
 from datetime import datetime
 import pytest
+import pytest_html
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
 from testdata.data import Data
-from utils.appium_server import AppiumServer
-from utils.data_loader import get_file_path
+from utils.config_reader import Config
+from utils.data_loader import get_file_path, find_file_path
 from utils.logger import setup_logger
 import allure
 
 
-@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+# html & Allure report hook
+@pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    # This hook lets you inspect the result of a test call
     outcome = yield
     rep = outcome.get_result()
+    setattr(item, "rep_" + rep.when, rep)
 
-    if rep.when == "call" and rep.failed:
-        driver = item.funcargs.get("setup")
-        if driver:
-            screenshots_dir = os.path.join(os.getcwd(), "screenshots")
-            os.makedirs(screenshots_dir, exist_ok=True)
-
+    if rep.when == "call":
+        rep.extras = getattr(rep, "extras", [])
+        if rep.failed:
+            # Create timestamp
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            rep.extras.append(pytest_html.extras.html("❌ FAILED"))
+            screenshot_dir = "screenshots"
             file_name = f"{item.name}_{timestamp}.png"
-            destination_file = os.path.join(screenshots_dir, file_name)
-            driver.save_screenshot(destination_file)
-            # Attach to Allure report
-            with open(destination_file, "rb") as image_file:
-                allure.attach(
-                    image_file.read(),
-                    name=f"{item.name}_screenshot",
-                    attachment_type=allure.attachment_type.PNG
+            file_path = os.path.join(screenshot_dir, file_name)
+            os.makedirs(screenshot_dir, exist_ok=True)
+            driver = item.session._driver
+            driver.save_screenshot(file_path)
+
+            with open(file_path, "rb") as f:
+                image_bytes = f.read()
+                encoded = base64.b64encode(image_bytes).decode("utf-8")
+
+            rep.extras.append(
+                pytest_html.extras.image(
+                    encoded,
+                    mime_type="image/png",
+                    extension="png"
                 )
-            print(f"\nScreenshot saved and attached to Allure: {destination_file}")
+            )
+            allure.attach(
+                image_bytes,
+                name="Failure Screenshot",
+                attachment_type=allure.attachment_type.PNG
+            )
+
+        elif rep.passed:
+            rep.extras.append(pytest_html.extras.html("✅ PASSED"))
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def logger():
     return setup_logger()
 
@@ -44,38 +61,52 @@ def logger():
 def pytest_addoption(parser):
     parser.addoption("--platform-version", action="store", default=Data.PLATFORM_VERSION, help="Android platform version")
     parser.addoption("--device-name", action="store", default=Data.DEVICE_NAME, help="Device name")
-    parser.addoption("--app-path", action="store", default=get_file_path(Data.APK_PATH),
+    parser.addoption("--app-path", action="store", default=find_file_path(Data.APK_NAME),
                      help="Path to the app file")
     parser.addoption("--app_package", action="store", default=Data.PACKAGE_NAME)
     parser.addoption("--app_activity", action="store", default=Data.APP_ACTIVITY)
+    parser.addoption("--grid-url", action="store", default=None,
+                     help="Selenium Grid URL e.g. http://localhost:4444")
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def setup(request, logger):
-    platform_version = request.config.getoption("--platform-version")
-    device_name = request.config.getoption("--device-name")
-    app_path = request.config.getoption("--app-path")
-    app_package = request.config.getoption("--app_package")
-    app_activity = request.config.getoption("--app_activity")
 
-    desired_caps = {
-        'platformName': Data.PLATFORM_NAME,
-        'automationName': Data.AUTOMATION_NAME,
-        'platformVersion': platform_version,
-        'deviceName': device_name,
-        'app': app_path,
-        'appPackage': app_package,
-        'appActivity': app_activity
-    }
+    options = UiAutomator2Options()
+    grid_url = request.config.getoption("--grid-url")
 
-    options = UiAutomator2Options().load_capabilities(desired_caps)
-    server = AppiumServer()
-    server.start_server()
-    driver = webdriver.Remote(str(Data.REMOTE_URL), options=options)
+    if grid_url and grid_url.strip():
+        executor = grid_url
+        options.app=find_file_path(Config.APP_NAME)
+        logger.info(f"Running tests on Selenium GRID: {executor}")
+    else:
+        executor = Config.APPIUM_LOCAL_URL
+        options.platform_name = Config.PLATFORM_NAME
+        options.automation_name = Config.AUTOMATION_NAME
+        options.platform_version = Config.PLATFORM_VERSION
+        options.device_name = Config.DEVICE_NAME
+        options.udid = Config.UDID
+        options.appWaitActivity = "*"
+        options.autoGrantPermissions = True
+        options.noReset = False
+        options.fullReset = True
+        options.newCommandTimeout = 100
+        options.app = find_file_path(Config.APP_NAME)
+        options.app_package = Config.APP_PACKAGE
+        options.app_activity = Config.APP_ACTIVITY
+        logger.info("Running tests on LOCAL Appium server")
+
+    driver = webdriver.Remote(
+        command_executor=executor,
+        options=options
+    )
+
+    request.session._driver = driver
     request.cls.driver = driver if hasattr(request, 'cls') else driver
 
-    logger.info(f"\n##### Starting test: {request.node.name} #####")
+    logger.info(f" Starting test: {request.node.name}")
+
     yield driver
-    logger.info(f"#####  Finished test: {request.node.name} ##### \n")
+
+    logger.info(f" Finished test: {request.node.name} ")
     driver.quit()
-    # server.stop_server()
