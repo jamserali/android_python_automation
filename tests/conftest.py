@@ -6,10 +6,12 @@ import pytest_html
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
 from testdata.data import Data
+from utils.appium_helper import AppiumHelper
 from utils.config_reader import Config
 from utils.data_loader import get_file_path, find_file_path
 from utils.logger import setup_logger
 import allure
+import subprocess
 
 
 # html & Allure report hook
@@ -72,29 +74,25 @@ def pytest_addoption(parser):
 @pytest.fixture(scope="function")
 def setup(request, logger):
 
-    options = UiAutomator2Options()
     grid_url = request.config.getoption("--grid-url")
+    app_installed = AppiumHelper.is_app_installed(Config.APP_PACKAGE)
 
     if grid_url and grid_url.strip():
         executor = grid_url
-        options.app=find_file_path(Config.APP_NAME)
         logger.info(f"Running tests on Selenium GRID: {executor}")
+
+        options = AppiumHelper.get_base_options(include_platform_version=False)
+        options.newCommandTimeout = 300
+
     else:
         executor = Config.APPIUM_LOCAL_URL
-        options.platform_name = Config.PLATFORM_NAME
-        options.automation_name = Config.AUTOMATION_NAME
-        options.platform_version = Config.PLATFORM_VERSION
-        options.device_name = Config.DEVICE_NAME
-        options.udid = Config.UDID
-        options.appWaitActivity = "*"
-        options.autoGrantPermissions = True
-        options.noReset = False
-        options.fullReset = True
-        options.newCommandTimeout = 100
-        options.app = find_file_path(Config.APP_NAME)
-        options.app_package = Config.APP_PACKAGE
-        options.app_activity = Config.APP_ACTIVITY
         logger.info("Running tests on LOCAL Appium server")
+
+        options = AppiumHelper.get_base_options(include_platform_version=True)
+        options.newCommandTimeout = 100
+
+
+    options = AppiumHelper.configure_app_installation(options, logger, app_installed)
 
     driver = webdriver.Remote(
         command_executor=executor,
@@ -104,9 +102,9 @@ def setup(request, logger):
     request.session._driver = driver
     request.cls.driver = driver if hasattr(request, 'cls') else driver
 
-    logger.info(f" Starting test: {request.node.name}")
+    logger.info(f"Starting test: {request.node.name}")
 
     yield driver
 
-    logger.info(f" Finished test: {request.node.name} ")
+    logger.info(f"Finished test: {request.node.name}")
     driver.quit()
